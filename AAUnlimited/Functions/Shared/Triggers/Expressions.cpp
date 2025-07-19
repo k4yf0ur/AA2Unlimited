@@ -439,7 +439,7 @@ namespace Shared {
 
 		Value Thread::IsPrivateRoom(std::vector<Value>& params) {
 			int roomID = params[0].iVal;
-			if (roomID >= 43 && roomID <= 52) return Value(true);
+			if ((roomID >= 43 && roomID <= 52) || (roomID > 128)) return Value(true);
 			return Value(false);
 		}
 

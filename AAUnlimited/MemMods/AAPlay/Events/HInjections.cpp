@@ -27,6 +27,11 @@ bool __stdcall TickRedirect(ExtClass::HInfo* hInfo) {
 	if (contScene) {
 		if (!loc_currentHInfo) {
 			LOGPRIO(Logger::Priority::INFO) << "H started\n";
+			auto roomno = *(((int*)Shared::GameState::getPlayerCharacter()->m_char->m_npcData->roomPtr) + 5);
+			if (roomno > 128) {
+				LOGPRIO(Logger::Priority::INFO) << "Detected extra private room, cleanup scheduled\n";
+				Shared::GameState::setIsHCleanupScheduled(true);
+			}
 			LUA_EVENT_NORET("start_h", hInfo);
 			Shared::GameState::setHInfo(hInfo);
 			Shared::Triggers::HStartData data;

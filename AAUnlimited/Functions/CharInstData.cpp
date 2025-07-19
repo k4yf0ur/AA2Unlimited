@@ -105,6 +105,294 @@ void CharInstData::LowPolyUpdate(int state, int contex)
 	}
 }
 
+void CharInstData::Teleport(DWORD location)
+{
+	if (this->IsValid()) {
+		this->m_forceAction.conversationId = 0;
+		this->m_forceAction.movementType = 0;
+		this->m_char->m_characterStatus->m_npcStatus->m_status = 0;
+		this->m_forceAction.roomTarget = -1;
+		this->m_forceAction.target1 = NULL;
+		this->m_forceAction.target2 = NULL;
+		this->m_forceAction.unknown = -1;
+		this->m_forceAction.unknown2 = -1;
+
+		if (!this->IsPC()) {
+			DWORD* address;
+			ExtClass::CharacterStruct* chrStruct = this->m_char;
+			uintptr_t base = reinterpret_cast<uintptr_t>(this->m_char->m_moreData2);
+			uintptr_t ptr1 = *reinterpret_cast<uintptr_t*>(base + 0x14);
+			uintptr_t CharStructEbx = *reinterpret_cast<uintptr_t*>(base + 0x18);
+			const DWORD offset1[]{ 0x3761CC, 0x28, 0x2C };
+			DWORD esiVar = *(DWORD*)ExtVars::ApplyRule(offset1);
+			DWORD seatOrder;
+			const DWORD offset2[]{ 0x3761CC, 0x1C, 0x98, 0x20, this->idxSave * 4, 0xE4 };
+			DWORD chrRoomPTR = *(DWORD*)ExtVars::ApplyRule(offset2);
+			const DWORD offset3[]{ 0x376164 };
+			DWORD classPointer = *(DWORD*)ExtVars::ApplyRule(offset3);
+			DWORD function1 = General::GameBase + 0x105880;
+			DWORD function2 = General::GameBase + 0x1062B0;
+			DWORD function3 = General::GameBase + 0xEC590;
+			DWORD function4 = General::GameBase + 0x158420;
+			DWORD function5 = General::GameBase + 0x1584C0;
+			DWORD function6 = General::GameBase + 0x15F6F0;
+			DWORD function7 = General::GameBase + 0x15E3E0;
+			DWORD function8 = General::GameBase + 0xE1F20;
+			DWORD function9 = General::GameBase + 0x102E60;
+
+			if (ptr1) {
+				uintptr_t ediVar = *reinterpret_cast<uintptr_t*>(ptr1 + 0x20);
+				__asm
+				{
+					mov edi, location
+					mov esi, edi
+					mov ecx, ediVar //this appears to be the current room that the npc is in. It's available through charstruct in ediVar
+					call function1
+					mov esi, chrRoomPTR
+					mov ecx, [esi]
+					mov edx, [ecx + 0x08]
+					mov eax, [edx + esi + 0x1C]
+					push 0x00
+					push edi
+					call function2
+					mov ecx, [esi]
+					mov edx, [ecx + 0x04]
+					mov[edx + esi + 0xDC], eax
+					mov ecx, chrStruct
+					mov esi, ecx
+					mov edx, [esi + 0x3C]
+					mov eax, esiVar
+					mov eax, [eax + 0x14]
+					push edx
+					call function3
+					movzx ecx, byte ptr[esi + 0x44]
+					mov eax, esiVar
+					mov eax, [eax + 0x18]
+					push 0x00
+					push edi
+					call function2 //calculates the room pointer stuff and puts it in eax
+					mov esi, eax
+					//theres a suspicious mov [esp+24], esi here
+					mov ecx, chrRoomPTR
+					push ecx
+					call function4
+					mov edx, chrStruct
+					mov eax, [edx + 0x3C]
+					push eax
+					push esi
+					call function9
+					mov esi, chrRoomPTR
+					mov edi, eax //eax was calculated by the above function
+					mov ecx, [edi + 0x08]
+					push 0x01
+					call function5
+					mov eax, chrRoomPTR
+					//here it hits the jump I killed
+
+					//this is the model unloading
+					mov eax, 0x4
+					mov esi, esiVar
+					push eax
+					mov ebx, CharStructEbx
+					mov eax, ebx
+					mov edx, esi
+					call function6
+					mov eax, [edi + 0x08]
+					push esi
+					mov esi, ebx
+					call function7
+
+					//this is the ending sequence
+					mov ebx, CharStructEbx
+					mov eax, ebx
+					call function8
+				}
+			}
+		}
+		else {
+			DWORD* address;
+			ExtClass::CharacterStruct* chrStruct = this->m_char;
+			uintptr_t base = reinterpret_cast<uintptr_t>(this->m_char->m_moreData2);
+			uintptr_t ptr1 = *reinterpret_cast<uintptr_t*>(base + 0x14);
+			uintptr_t CharStructEbx = *reinterpret_cast<uintptr_t*>(base + 0x18);
+			const DWORD offset1[]{ 0x3761CC, 0x28, 0x2C };
+			DWORD esiVar = *(DWORD*)ExtVars::ApplyRule(offset1);
+			DWORD seatOrder;
+			const DWORD offset2[]{ 0x3761CC, 0x1C, 0x98, 0x20, this->idxSave * 4, 0xE4 };
+			DWORD chrRoomPTR = *(DWORD*)ExtVars::ApplyRule(offset2);
+			const DWORD offset3[]{ 0x376164 };
+			auto roomno = *(((int*)this->m_char->m_npcData->roomPtr) + 5);
+			DWORD classPointer = *(DWORD*)ExtVars::ApplyRule(offset3);
+			DWORD function1 = General::GameBase + 0x105880;
+			DWORD function2 = General::GameBase + 0x1062B0;
+			DWORD function3 = General::GameBase + 0xEC590;
+			DWORD function4 = General::GameBase + 0x158420;
+			DWORD function5 = General::GameBase + 0x1584C0;
+			DWORD function6 = General::GameBase + 0x15F6F0;
+			DWORD function7 = General::GameBase + 0x15E3E0;
+			DWORD function8 = General::GameBase + 0xE1F20;
+			DWORD function9 = General::GameBase + 0x102E60;
+			DWORD function10 = General::GameBase + 0x48FA0;
+			DWORD function11 = General::GameBase + 0x8AC70;
+			DWORD function12 = General::GameBase + 0x1570E0;
+			DWORD function13 = General::GameBase + 0x1001C0;
+			DWORD function14 = General::GameBase + 0x100D90;
+			DWORD function15 = General::GameBase + 0x164DE0;
+			DWORD function16 = General::GameBase + 0x15C0B0;
+			DWORD function17 = General::GameBase + 0xF18F0;
+			DWORD function18 = General::GameBase + 0x105930;
+			DWORD function19 = General::GameBase + 0x103220;
+
+
+			const DWORD offset4[]{ 0x3761CC, 0x28, 0x2C };
+			DWORD weirdECX = *(DWORD*)ExtVars::ApplyRule(offset4);
+			if (ptr1) {
+				uintptr_t ediVar = *reinterpret_cast<uintptr_t*>(ptr1 + 0x20);
+				__asm
+				{
+					// unloading current room and assets
+					mov ecx, ediVar
+					mov eax, roomno
+					push ecx
+					call function18
+
+					mov edx, location
+					mov esi, edx
+					mov ecx, ediVar
+					call function1
+
+					mov edi, ediVar
+					mov eax, [edi + 0x34]
+					push eax
+					call function19
+
+					/*mov edi, chrStruct
+					mov ecx, ediVar
+					push ecx
+					call function10*/
+					mov ecx, [edi + 0x28]
+					mov eax, [ecx + 0x6B8]
+					add eax, [ecx + 0x6B0]
+					add ecx, 0x6AC
+					cdq
+					sub eax, edx
+					mov esi, eax
+					sar esi, 1
+					call function11
+					mov esi, CharStructEbx
+					mov ecx, [esi + 0xE4]
+					mov eax, [ecx]
+					mov eax, [eax + 0x08]
+					add eax, ecx
+					call function12
+					//
+
+					mov edi, location
+					mov esi, edi
+					mov ecx, ediVar //this appears to be the current room that the npc is in. It's available through charstruct in ediVar
+					call function1
+					mov esi, chrRoomPTR
+					mov ecx, [esi]
+					mov edx, [ecx + 0x08]
+					mov eax, [edx + esi + 0x1C]
+					push 0x00
+					push edi
+					call function2
+					mov ecx, [esi]
+					mov edx, [ecx + 0x04]
+					mov[edx + esi + 0xDC], eax
+
+					//for bg change
+					mov ecx, esiVar
+					mov esi, [ecx + 0x18]
+					mov eax, [esi + 0x34]
+					push 0x00
+					mov edi, location
+					mov esi, ediVar
+					mov eax, esi
+					push edi
+					call function2
+					push eax
+					mov[esi + 0x34], eax
+					call function13
+					mov edx, [esi + 0x34]
+					push edx
+					call function14
+					mov eax, esiVar
+					mov eax, [eax + 0x2C]
+					push eax
+					mov edi, location
+					mov ecx, edi
+					call function15
+
+					//
+
+					mov ecx, chrStruct
+					mov esi, ecx
+					mov edx, [esi + 0x3C]
+					mov eax, esiVar
+					mov eax, [eax + 0x14]
+					push edx
+					call function3
+					movzx ecx, byte ptr[esi + 0x44]
+					mov eax, esiVar
+					mov eax, [eax + 0x18]
+					push 0x00
+					push edi
+					call function2 //calculates the room pointer stuff and puts it in eax
+					mov esi, eax
+					//theres a suspicious mov [esp+24], esi here
+					mov ecx, chrRoomPTR
+					push ecx
+					call function4
+					mov edx, chrStruct
+					mov eax, [edx + 0x3C]
+					push eax
+					push esi
+					call function9
+					mov esi, chrRoomPTR
+					mov edi, eax //eax was calculated by the above function
+					mov ecx, [edi + 0x08]
+					push 0x01
+					call function5
+					mov eax, chrRoomPTR
+					//here it hits the jump I killed
+
+					//this is the model unloading
+					mov eax, 0x4
+					mov esi, esiVar
+					push eax
+					mov ebx, CharStructEbx
+					mov eax, ebx
+					mov edx, esi
+					call function6
+					mov eax, [edi + 0x08]
+					push esi
+					mov esi, ebx
+					call function7
+
+					mov edi, weirdECX
+					push 0x01
+					push edi
+					call function16
+
+					mov eax, classPointer
+					mov eax, [eax + 0x1C]
+					push eax
+					call function17
+
+					//this is the ending sequence
+					mov ebx, CharStructEbx
+					mov eax, ebx
+					call function8
+
+
+				}
+			}
+		}
+	}
+}
+
 
 void CharInstData::ArrangeDate(int targetSeat)
 {

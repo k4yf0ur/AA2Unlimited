@@ -107,6 +107,7 @@ public:
 	void AddRelationshipPoints(ExtClass::CharacterStruct * towards, int love, int like, int dislike, int hate);
 	void ClearCache();
 	void LowPolyUpdate(int state, int context);
+	void Teleport(DWORD location);
 	void ArrangeDate(int targetSeat);
 	void PromiseLewd(int targetSeat);
 	void SetHeadTracking(int headtracking);

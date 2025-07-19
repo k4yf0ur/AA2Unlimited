@@ -629,6 +629,22 @@ namespace Shared {
 				inst->m_char->m_charData->m_pregnancyRisks[dayOfCycle] = params[2].iVal;
 			}
 		}
+
+
+		//int seat, int location
+		void Thread::Teleport(std::vector<Value>& params) {
+			int card = params[0].iVal;
+			int location = params[1].iVal;
+			if (ActionSeatInvalid(card)) return;
+			CharInstData* inst = &AAPlay::g_characters[card];
+			if (!inst->IsValid()) {
+				return;
+			}
+			else {
+				inst->Teleport(location);
+			}
+		}
+
 		//int seat, int trait, bool enable
 		void Thread::SetCherryStatus(std::vector<Value>& params)
 		{
@@ -3146,6 +3162,12 @@ namespace Shared {
 				TEXT("Set the pregnancy risk on the specified day of the 14 day cycle. 2 = dangerous, 1 = safe, 0 = normal"),
 				{ TYPE_INT, TYPE_INT, TYPE_INT },
 				&Thread::SetPregnancyRisk
+			},
+			{
+				145, ACTIONCAT_MODIFY_CHARACTER, TEXT("Teleport"), TEXT("%p.Teleport(location: %p) "),
+				TEXT("Teleports the character to the specified room."),
+				{ TYPE_INT, TYPE_INT },
+				&Thread::Teleport
 			},
 		};
 

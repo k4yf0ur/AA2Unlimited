@@ -77,6 +77,7 @@ namespace Shared {
 			void AddTraitMod(std::vector<Value>& params);
 			void SetCardPreference(std::vector<Value>& params);
 			void SetPregnancyRisk(std::vector<Value>& params);
+			void Teleport(std::vector<Value>& params);
 			void SetCherryStatus(std::vector<Value>& params);
 			void SetClothingState(std::vector<Value>& params);
 			void SetSkirtState(std::vector<Value>& params);

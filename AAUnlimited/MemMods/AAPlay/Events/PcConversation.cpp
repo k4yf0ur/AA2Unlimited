@@ -29,7 +29,21 @@ void __stdcall EndEvent() {
 					pcConvoStateUpdatedData.state = -1;
 					LUA_EVENT_NORET("convo", false);
 					Shared::Triggers::ThrowEvent(&pcConvoStateUpdatedData);
+					if (Shared::GameState::getIsHCleanupScheduled()) {
+						const DWORD offset1[]{ 0x376164, 0x98, 0x20, 0x00, 0xE4, 0x128 };
+						DWORD room = *(DWORD*)ExtVars::ApplyRule(offset1);
 
+						Shared::GameState::getPlayerCharacter()->Teleport(room);
+						if (Shared::GameState::getConversationCharacter(0)) {
+							AAPlay::g_characters[Shared::GameState::getConversationCharacter(0)->m_seat].Teleport(room);
+							AAPlay::g_characters[Shared::GameState::getConversationCharacter(0)->m_seat].LowPolyUpdate(AAPlay::g_characters[Shared::GameState::getConversationCharacter(0)->m_seat].m_char->m_bClothesOn, AAPlay::g_characters[Shared::GameState::getConversationCharacter(0)->m_seat].m_char->m_currClothes);
+						}
+						if (Shared::GameState::getConversationCharacter(1)) {
+							AAPlay::g_characters[Shared::GameState::getConversationCharacter(1)->m_seat].Teleport(room);
+							AAPlay::g_characters[Shared::GameState::getConversationCharacter(1)->m_seat].LowPolyUpdate(AAPlay::g_characters[Shared::GameState::getConversationCharacter(1)->m_seat].m_char->m_bClothesOn, AAPlay::g_characters[Shared::GameState::getConversationCharacter(1)->m_seat].m_char->m_currClothes);
+						}
+						Shared::GameState::setIsHCleanupScheduled(false);
+					}
 					//If we changed styles during a high poly conversation, reload the low polies since this is the conversation end
 					if (Shared::GameState::getConversationCharacter(0)) {
 						if (AAPlay::g_characters[Shared::GameState::getConversationCharacter(0)->m_seat].lowPolyUpd) {
@@ -43,6 +57,8 @@ void __stdcall EndEvent() {
 							AAPlay::g_characters[Shared::GameState::getConversationCharacter(1)->m_seat].lowPolyUpd = false;
 						}
 					}
+
+					
 
 					Shared::GameState::clearConversationCharacter(-1);
 				}

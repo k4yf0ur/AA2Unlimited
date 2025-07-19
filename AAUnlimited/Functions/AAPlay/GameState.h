@@ -19,6 +19,9 @@ namespace Shared {
 		bool getIsOverridingDialogue();
 		void setIsOverriding(bool value);
 		bool getIsOverriding();
+		void setIsHCleanupScheduled(bool value);
+		bool getIsHCleanupScheduled();
+
 		void updateIsOverriding();
 
 		void setIsInMainMenu(bool value);
@@ -42,6 +45,9 @@ namespace Shared {
 		bool getLockedInH();
 		void setRemovedSeat(int value);
 		int getRemovedSeat();
+
+		void setExtraPublicRoomsCount(bool value);
+		bool getExtraPublicRoomsCount();
 
 		void setIsInH(bool value);
 		bool getIsInH();
@@ -69,6 +75,9 @@ namespace Shared {
 
 		void SetRoomNumber(int seat, int room);
 		int GetRoomNumber(int seat);
+
+		void AddRoomToList(int room);
+		std::vector<int>& GetRoomList();
 
 		void AddDelayedEvent(Shared::Triggers::DelayedEventData);
 		std::list<Shared::Triggers::DelayedEventData>* GetDelayedEvents();

@@ -1323,6 +1323,17 @@ void __stdcall NpcMovingActionEvent(void* moreUnknownData, ExtClass::ActionParam
 	case 2: {
 		//walk somewhere
 		NpcWalkToRoomData data;
+		if (!Shared::GameState::GetRoomList().empty()) {
+			std::vector<int>& roomList = Shared::GameState::GetRoomList();
+			int size = roomList.size();
+			for (int value : roomList) {
+				// Do something with the value, for example, print it
+				if ((double)rand() / RAND_MAX < static_cast<double>(size) / static_cast<double>(size+60)) {
+					//rarely, send NPCs to extra public roooms
+					params->roomTarget = roomList[rand() % roomList.size()];
+				}
+			}
+		}
 		data.substruct = params;
 		data.card = AAPlay::GetSeatFromStruct(user);
 		data.targetRoom = params->roomTarget;

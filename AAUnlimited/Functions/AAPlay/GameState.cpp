@@ -33,6 +33,8 @@ struct GameStateStruct {
 		m_talkCardName = L"";
 		m_talkAboutName = L"";
 		m_removedSeat = -1;
+		m_hcleanupScheduled = false;
+		extraPublicRoomsCount = true;
 	}
 
 	//Game state indicators
@@ -62,6 +64,9 @@ struct GameStateStruct {
 	std::wstring m_talkCardName;		//The name of the card that is currently talking; used in subtitles.
 	std::wstring m_talkAboutName;		//The name of the card that is currently being talked about; used in subtitles
 	int m_removedSeat;
+	bool m_hcleanupScheduled;
+	std::vector<int> roomList;
+	bool extraPublicRoomsCount;
 
 	std::list<Shared::Triggers::DelayedEventData> m_delayedEvents;
 
@@ -148,7 +153,15 @@ void Shared::GameState::setIsDrawingShadow(bool value)
 	loc_gameState.m_drawShadow = value;
 }
 
+bool Shared::GameState::getIsHCleanupScheduled()
+{
+	return loc_gameState.m_hcleanupScheduled;
+}
 
+void Shared::GameState::setIsHCleanupScheduled(bool value)
+{
+	loc_gameState.m_hcleanupScheduled = value;
+}
 
 void Shared::GameState::updateIsOverriding()
 {
@@ -230,6 +243,16 @@ int Shared::GameState::getRemovedSeat()
 	return loc_gameState.m_removedSeat;
 }
 
+void Shared::GameState::setExtraPublicRoomsCount(bool value)
+{
+	loc_gameState.extraPublicRoomsCount = value;
+}
+
+bool Shared::GameState::getExtraPublicRoomsCount()
+{
+	return loc_gameState.extraPublicRoomsCount;
+}
+
 void Shared::GameState::setIsInH(bool value)
 {
 	loc_gameState.is_in_h = value;
@@ -308,6 +331,15 @@ void Shared::GameState::SetRoomNumber(int seat, int room) {
 int Shared::GameState::GetRoomNumber(int seat) {
 	if (seat < 0 || seat >= 25) return -1;
 	return loc_gameState.roomNumber[seat];
+}
+
+void Shared::GameState::AddRoomToList(int room) {
+	if (room < 0 || room >= 256) return;
+	loc_gameState.roomList.push_back(room);
+}
+
+std::vector<int>& Shared::GameState::GetRoomList() {
+	return loc_gameState.roomList;
 }
 
 bool operator<(Shared::Triggers::DelayedEventData & a, Shared::Triggers::DelayedEventData & b)

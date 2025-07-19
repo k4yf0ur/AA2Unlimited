@@ -221,6 +221,7 @@ DWORD PatchIAT(void *piat, void *newp)
 #include "MemMods/AAPlay/Events/ClothingDialog.h"
 #include "MemMods/AAPlay/Events/NpcActions.h"
 #include "MemMods/AAPlay/Events/ClothesLimit.h"
+#include "MemMods/AAPlay/Events/ExtraRooms.h"
 #include "MemMods/AAPlay/Events/ScreenCapture.h"
 #include "MemMods/AAPlay/Events/UiEvent.h"
 #include "MemMods/AAPlay/Events/CharacterRender.h"
@@ -328,6 +329,23 @@ void InitializeHooks() {
 		ClothesLimit::clothingSlotThirdInject();
 		NpcActions::relationshipPointChangedInjection();
 		NpcActions::afterTransferOutInjection();
+		ExtraRooms::extraRoomsInjection();
+		ExtraRooms::extraRoomsSecondInjection();
+		ExtraRooms::extraRoomsThirdInjection();
+		ExtraRooms::extraRoomsFourthInjection();
+		ExtraRooms::extraRoomsFifthInjection();
+		ExtraRooms::extraRoomsSixthInjection();
+		ExtraRooms::extraRoomsPrivateRoomHInjection();
+		ExtraRooms::extraRoomsPrivateRoomHInjection2();
+		ExtraRooms::extraRoomsPrivateRoomHInjection3();
+		ExtraRooms::extraRoomsPrivateRoomHInjection4();
+		ExtraRooms::extraRoomsPrivateRoomHInjection5();
+		ExtraRooms::extraRoomsPrivateRoomHInjection6();
+		ExtraRooms::extraRoomsPrivateRoomHInjection7();
+		ExtraRooms::extraRoomsPrivateRoomHInjection8();
+		ExtraRooms::extraRoomsPrivateRoomHInjection9();
+		ExtraRooms::extraRoomsPrivateRoomHInjection10();
+		ExtraRooms::extraRoomsPrivateRoomHInjection11();
 		//ClothesLimit::personalitySlotUnlock(); hooks are here for the time we'll need this, i'll move it to a different file when needed
 		//NpcActions::headTrackingChangeInjection();
 

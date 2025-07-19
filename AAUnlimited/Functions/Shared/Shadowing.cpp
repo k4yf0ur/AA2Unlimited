@@ -51,6 +51,30 @@ bool OpenShadowedFile(wchar_t* archive, wchar_t* file, DWORD* readBytes, BYTE** 
 	if (hFile == NULL || hFile == INVALID_HANDLE_VALUE) {
 		return false;
 	}
+	if (Shared::GameState::getExtraPublicRoomsCount()) {			//run only once
+		if (wcscmp(file, L"js_map_00_00_00.lst") == 0) {
+			Shared::GameState::setExtraPublicRoomsCount(false);
+			//add in rooms from the shadow set to the list, otherwise initialize just the regular rooms
+			std::ifstream file(strArchivePath);
+			if (file.is_open()) {
+				std::string line;
+				while (std::getline(file, line)) {
+				if (line.empty()) continue;
+				std::istringstream ss(line);
+				int id;
+				std::string roomName, lstFile, viFile, loFile, lastCol;
+				ss >> id >> roomName >> lstFile >> viFile >> loFile >> lastCol;
+				if (lstFile != "0") {
+					if (id <= 0x80 && id > 0x3c) {
+						//adds the new public room to the list
+						Shared::GameState::AddRoomToList(id);
+						}
+					}
+				}
+				file.close();
+			}
+		}
+	}
 	DWORD lo, hi;
 	lo = GetFileSize(hFile, &hi);
 	void* fileBuffer = Shared::IllusionMemAlloc(lo);
